@@ -1,7 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'jacoco'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
+
+mainClassName = 'org.dstadler.filesearch.LookForFileType'
+version = '1.0'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Application to walk a directory and print out detected media-types as JSON to stdout', 'Implementation-Version': version
+    }
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -34,11 +44,4 @@ test {
 
 jacoco {
 	toolVersion = '0.7.7.201606060606'
-}
-
-task search(type:JavaExec) {
-    description = 'Look for files'
-
-    main = 'org.dstadler.filesearch.LookForFileType'
-    classpath = sourceSets.main.runtimeClasspath
 }
