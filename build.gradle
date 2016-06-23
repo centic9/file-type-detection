@@ -15,18 +15,11 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.dstadler:commons-dost:1.0.0.20'
-    //compile 'com.google.guava:guava:18.0'
+    compile 'org.apache.tika:tika-parsers:1.13'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
-}
-
-task search(type:JavaExec) {
-    description = 'Look for files'
-
-    main = 'org.dstadler.filesearch.LookForFiletype'
-	classpath = sourceSets.main.runtimeClasspath
 }
 
 test {
@@ -41,4 +34,11 @@ test {
 
 jacoco {
 	toolVersion = '0.7.7.201606060606'
+}
+
+task search(type:JavaExec) {
+    description = 'Look for files'
+
+    main = 'org.dstadler.filesearch.LookForFileType'
+    classpath = sourceSets.main.runtimeClasspath
 }
