@@ -2,10 +2,11 @@ package org.dstadler.filesearch;
 
 import com.google.common.base.Preconditions;
 import org.apache.commons.io.DirectoryWalker;
-import org.apache.tika.detect.DefaultDetector;
+import org.apache.commons.io.filefilter.*;
+import org.apache.tika.Tika;
 import org.apache.tika.io.TikaInputStream;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
+import org.dstadler.commons.collections.ConcurrentMappedCounter;
+import org.dstadler.commons.collections.MappedCounter;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,13 +17,27 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
-    private final DefaultDetector detector = new DefaultDetector();
+    private final Tika tika = new Tika();
+    private final MappedCounter<String> stats = new ConcurrentMappedCounter<>();
+
     private long count = 0;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public FileTypeDirectoryWalker() {
-        super();
+        // filter out .svn and .git directories
+        super(new NotFileFilter(
+                new AndFileFilter(
+                        DirectoryFileFilter.INSTANCE,
+                        new OrFileFilter(
+                            new NameFileFilter(".svn"),
+                            new NameFileFilter(".git")
+                ))), -1);
+        //super(new NameFileFilter("test.xsb"), -1);
+    }
+
+    public MappedCounter<String> getStats() {
+        return stats;
     }
 
     @Override
@@ -33,12 +48,13 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
             public void run() {
                 try {
                     try (TikaInputStream str = TikaInputStream.get(file.toPath())) {
-                        final MediaType mediaType = detector.detect(str, new Metadata());
+                        final String mediaType = tika.detect(str, file.getName());
 
                         // ensure that we do not mix output from different threads
                         synchronized (this) {
-                            System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType.toString() + "\"}");
+                            System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
                         }
+                        stats.addInt(mediaType, 1);
                     }
                 } catch (IOException e) {
                     System.err.println("Had exeception while handling file " + file + ": " + e);
