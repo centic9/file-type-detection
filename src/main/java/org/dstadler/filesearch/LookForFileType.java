@@ -11,14 +11,8 @@ public class LookForFileType {
 
         // walk all arguments
         for(String location : args) {
-            long start = System.currentTimeMillis();
-            System.err.println("Processing directory " + location);
-
             FileTypeDirectoryWalker walker = new FileTypeDirectoryWalker();
-            long count = walker.execute(new File(location));
-
-            System.err.println("Found " + count + " files in directory '" + location + "', took " + (System.currentTimeMillis() - start) + "ms");
-            System.err.println("Had stats: " + walker.getStats().sortedMap());
+            walker.execute(new File(location));
         }
     }
 }
