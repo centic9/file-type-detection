@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+sourceCompatibility = 1.8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'commons-io:commons-io:2.4'
+	compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.dstadler:commons-dost:1.0.0.20'
+    //compile 'com.google.guava:guava:18.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.13'
+}
+
+task search(type:JavaExec) {
+    description = 'Look for files'
+
+    main = 'org.dstadler.filesearch.LookForFiletype'
+	classpath = sourceSets.main.runtimeClasspath
+}
+
+test {
+	systemProperties = System.properties
+
+	// enable to show standard out and standard error of the test JVM(s) on the console
+	// testLogging.showStandardStreams = true
+
+	// http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
+	systemProperties['user.dir'] = workingDir
+}
+
+jacoco {
+	toolVersion = '0.7.7.201606060606'
+}

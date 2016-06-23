@@ -1,0 +1,14 @@
+# Gradle caches
+.gradle
+
+# build files
+build/
+bin/
+
+# logfiles
+*.log
+
+# IntelliJ
+/out/
+*.iml
+.idea/
