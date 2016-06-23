@@ -5,6 +5,7 @@ apply plugin: 'application'
 sourceCompatibility = 1.8
 
 mainClassName = 'org.dstadler.filesearch.LookForFileType'
+applicationDefaultJvmArgs = ['-Xmx1g', '-XX:+HeapDumpOnOutOfMemoryError']
 version = '1.0'
 
 jar {
