@@ -4,4 +4,12 @@
         <_comment>XML Beans binary file</_comment>
         <glob pattern="*.xsb"/>
     </mime-type>
+
+    <!-- try to speed this up as otherwise zip-files take a long time as Tika unzips the file to find out the "true" mimetype -->
+    <mime-type type="application/zip">
+        <_comment>Compressed Archive File</_comment>
+        <alias type="application/x-zip-compressed"/>
+        <glob pattern="*.zip"/>
+    </mime-type>
+
 </mime-info>
