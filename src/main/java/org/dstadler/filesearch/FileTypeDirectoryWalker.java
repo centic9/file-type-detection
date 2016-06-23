@@ -15,13 +15,13 @@ import java.util.Collections;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
     private final Tika tika = new Tika();
     private final MappedCounter<String> stats = new ConcurrentMappedCounter<>();
-
-    private long count = 0;
-
+    private final AtomicLong count = new AtomicLong(0);
+    private final AtomicLong submitCount = new AtomicLong(0);
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     public FileTypeDirectoryWalker() {
@@ -42,7 +42,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
 
     @Override
     protected void handleFile(File file, int depth, Collection<Void> results) throws IOException {
-        count++;
+        submitCount.incrementAndGet();
         executor.submit(new Runnable() {
             @Override
             public void run() {
@@ -54,8 +54,18 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                         synchronized (this) {
                             System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
                         }
+
+                        long curr = count.incrementAndGet();
+                        if(curr % 1000 == 0) {
+                            System.err.print(".");
+                            if(curr % 100000 == 0) {
+                                System.err.println();
+                            }
+                        }
+
                         stats.addInt(mediaType, 1);
                     }
+
                 } catch (IOException e) {
                     System.err.println("Had exeception while handling file " + file + ": " + e);
                     e.printStackTrace(System.err);
@@ -71,11 +81,18 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
 
         walk(startDir, Collections.emptyList());
 
+        // wait for all started tasks to finish
         executor.shutdown();
-        if(!executor.awaitTermination(1, TimeUnit.MINUTES)) {
-            throw new IllegalStateException("Could not wait for all threads to finish processing");
+        System.err.println();
+        System.err.println("Waiting for " + submitCount.get() + " files to be processed, " + count.get() + " already finished.");
+        while(!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+            //throw new IllegalStateException("Could not wait for all threads to finish processing");
+            System.err.println("Still waiting for " + (submitCount.get() - count.get()) + " files to be processed.");
         }
 
-        return count;
+        // add a newline as we print out dots to show some progress
+        System.err.println();
+
+        return count.get();
     }
 }
