@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'application'
 
 sourceCompatibility = 1.8
@@ -27,22 +26,9 @@ dependencies {
 	compile 'org.apache.commons:commons-lang3:3.4'
     compile 'org.dstadler:commons-dost:1.0.0.20'
     compile 'org.apache.tika:tika-parsers:1.13'
+    compile 'com.google.code.gson:gson:2.7'
 }
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
-}
-
-test {
-	systemProperties = System.properties
-
-	// enable to show standard out and standard error of the test JVM(s) on the console
-	// testLogging.showStandardStreams = true
-
-	// http://forums.gradle.org/gradle/topics/jacoco_related_failure_in_multiproject_build
-	systemProperties['user.dir'] = workingDir
-}
-
-jacoco {
-	toolVersion = '0.7.7.201606060606'
 }

@@ -1,6 +1,7 @@
 package org.dstadler.filesearch;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.filefilter.*;
 import org.apache.tika.Tika;
@@ -49,9 +50,14 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     try (TikaInputStream str = TikaInputStream.get(file.toPath())) {
                         final String mediaType = tika.detect(str, file.getName());
 
-                        // ensure that we do not mix output from different threads
+                        JsonObject json = new JsonObject();
+                        json.addProperty("fileName", file.getAbsolutePath());
+                        json.addProperty("mediaType", mediaType);
+
+                        // synchronize to ensure that we do not mix output from different threads
                         synchronized (this) {
-                            System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
+                            //System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
+                            System.out.println(json);
                         }
 
                         stats.addInt(mediaType, 1);
