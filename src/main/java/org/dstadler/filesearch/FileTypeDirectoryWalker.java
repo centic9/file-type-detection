@@ -50,17 +50,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     try (TikaInputStream str = TikaInputStream.get(file.toPath())) {
                         final String mediaType = tika.detect(str, file.getName());
 
-                        JsonObject json = new JsonObject();
-                        json.addProperty("fileName", file.getAbsolutePath());
-                        json.addProperty("mediaType", mediaType);
-
-                        // synchronize to ensure that we do not mix output from different threads
-                        synchronized (this) {
-                            //System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
-                            System.out.println(json);
-                        }
-
-                        stats.addInt(mediaType, 1);
+                        recordMediaType(mediaType);
                     }
                 } catch (FileSystemException e) {
                     // report some types of exception without stacktrace
@@ -80,13 +70,27 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     }
                 }
             }
+
+            private void recordMediaType(String mediaType) {
+                JsonObject json = new JsonObject();
+                json.addProperty("fileName", file.getAbsolutePath());
+                json.addProperty("mediaType", mediaType);
+
+                // synchronize to ensure that we do not mix output from different threads
+                synchronized (this) {
+                    //System.out.println("{ \"fileName\":\"" + file.getAbsolutePath() + "\", \"mediaType\":\"" + mediaType + "\"}");
+                    System.out.println(json);
+                }
+
+                stats.addInt(mediaType, 1);
+            }
         });
     }
 
     private void countSubmitted() throws IOException {
         long submitted = submitCount.incrementAndGet();
         if(submitted - count.get() > 2000) {
-            // if there are more than 2000, wait unitl we are below 1000 again to not fill up memory with all the submitted tasks
+            // if there are more than 2000, wait until we are below 1000 again to not fill up memory with all the submitted tasks
             while (submitted - count.get() > 1000) {
                 System.err.println("Delaying submitting a bit to not build up too many submitted jobs, having " + submitted + " overall, " + count.get() +
                         " done, " + (submitted - count.get()) + " still to do, waiting for this to be below 1000 before adding new jobs.");

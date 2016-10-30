@@ -11,6 +11,8 @@ public class LookForFileType {
 
         // walk all arguments
         for(String location : args) {
+            System.err.println("Handling directory " + location);
+
             FileTypeDirectoryWalker walker = new FileTypeDirectoryWalker();
             walker.execute(new File(location));
         }
