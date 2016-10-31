@@ -56,7 +56,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     // report some types of exception without stacktrace
                     System.err.println("Had exception while handling file " + file + ": " + e);
                     errorCount.incrementAndGet();
-                } catch (IOException | OutOfMemoryError e) {
+                } catch (IOException e) {
                     System.err.println("Had exception while handling file " + file + ": " + e);
                     e.printStackTrace(System.err);
                     errorCount.incrementAndGet();
