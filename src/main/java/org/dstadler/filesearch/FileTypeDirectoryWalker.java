@@ -25,7 +25,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
     private final AtomicLong count = new AtomicLong(0);
     private final AtomicLong submitCount = new AtomicLong(0);
     private final AtomicLong errorCount = new AtomicLong(0);
-    private final ExecutorService executor = Executors.newFixedThreadPool(10);
+    private final ExecutorService executor = Executors.newFixedThreadPool(4);
 
     public FileTypeDirectoryWalker() {
         // filter out .svn and .git directories
@@ -56,7 +56,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     // report some types of exception without stacktrace
                     System.err.println("Had exception while handling file " + file + ": " + e);
                     errorCount.incrementAndGet();
-                } catch (IOException e) {
+                } catch (IOException | OutOfMemoryError e) {
                     System.err.println("Had exception while handling file " + file + ": " + e);
                     e.printStackTrace(System.err);
                     errorCount.incrementAndGet();
