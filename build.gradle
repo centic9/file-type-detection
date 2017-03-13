@@ -22,13 +22,14 @@ repositories {
 }
 
 dependencies {
-    compile 'commons-io:commons-io:2.4'
-	compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'org.dstadler:commons-dost:1.0.0.20'
+    compile 'commons-io:commons-io:2.5'
+	compile 'org.apache.commons:commons-lang3:3.5'
+    compile 'org.dstadler:commons-dost:1.0.0.22'
     compile 'org.apache.tika:tika-parsers:1.13'
     compile 'com.google.code.gson:gson:2.7'
+    compile 'com.google.guava:guava:21.0'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+    gradleVersion = '3.4.1'
 }
