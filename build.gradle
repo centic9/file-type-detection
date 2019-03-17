@@ -22,14 +22,14 @@ repositories {
 }
 
 dependencies {
-    compile 'commons-io:commons-io:2.5'
-	compile 'org.apache.commons:commons-lang3:3.5'
-    compile 'org.dstadler:commons-dost:1.0.0.22'
-    compile 'org.apache.tika:tika-parsers:1.13'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.google.guava:guava:21.0'
+    compile 'commons-io:commons-io:2.6'
+	compile 'org.apache.commons:commons-lang3:3.8.1'
+    compile 'org.dstadler:commons-dost:1.0.0.27'
+    compile 'org.apache.tika:tika-parsers:1.20'
+    compile 'com.google.code.gson:gson:2.8.5'
+    compile 'com.google.guava:guava:27.1-jre'
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.4.1'
+wrapper {
+    gradleVersion = '4.10.3'
 }
