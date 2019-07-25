@@ -1,9 +1,13 @@
+# Use trusty to still have JDK 8 available
+dist: trusty
 language: java
 jdk:
   - oraclejdk8
 
 before_install:
  - chmod +x gradlew
+  - oraclejdk11
+# not available yet  - openjdk11
 
 #after_failure:
 #- cat build/test-results/*.xml
