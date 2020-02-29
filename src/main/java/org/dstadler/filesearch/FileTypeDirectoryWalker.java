@@ -124,8 +124,9 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
      * @param startDir The directory to walk recursively
      * @throws IOException If reading directories or files cauess a problem
      * @throws InterruptedException If execution is interrupted
+     * @return Statistics about which mime-types was found how often
      */
-    public void execute(File startDir) throws IOException, InterruptedException {
+    public MappedCounter<String> execute(File startDir) throws IOException, InterruptedException {
         Preconditions.checkNotNull(startDir, "Directory needs to be specified");
         Preconditions.checkState(startDir.exists(), "Directory %s needs to exist", startDir);
         Preconditions.checkState(startDir.isDirectory(), "Need to specify a directory, not a file, had %s", startDir);
@@ -151,5 +152,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
 
         System.err.println("Found " + count + " files in directory '" + startDir + "', could not read " + errorCount.get() + " files, took " + (System.currentTimeMillis() - start) + "ms");
         System.err.println("Had stats: " + stats.sortedMap());
+
+        return stats;
     }
 }
