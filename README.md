@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/centic9/file-type-detection.svg)](https://travis-ci.org/centic9/file-type-detection) [![Gradle Status](https://gradleupdate.appspot.com/centic9/file-type-detection/status.svg?branch=master)](https://gradleupdate.appspot.com/centic9/file-type-detection/status)
 
-This is a small tool to use []Apache Tika](http://tika.apache.org) to detect the mime-type of files in a
+This is a small tool to use [Apache Tika](http://tika.apache.org) to detect the mime-type of files in a
 directory and produce JSON output that can be used for further processing.
 
 The JSON is printed to stdout. Summary/Error information is printed to stderr.
@@ -15,7 +15,7 @@ So a typical invocation will redirect stdout to a file via `> file-types.txt`
 
 ##### Build it
 
-    ./gradlew check
+    ./gradlew check installDist
 
 #### Run it
 
@@ -23,16 +23,19 @@ So a typical invocation will redirect stdout to a file via `> file-types.txt`
 
 ### How it works
 
-The actual code is quite small, it uses the `DirectoryWalker` from Apache Commons-IO to
+The actual code is quite small, it uses the `DirectoryWalker` from 
+[Apache Commons IO](/https://commons.apache.org/proper/commons-io/) to
 search the provided directories and call a handler for each file that is found.
 
-The handler uses a thread-pool to schedule a `Runnable` to a `Executor` which performs the
-detection of the file-type via Tika. The async handling allows to scan the file-system in
+The handler uses a thread-pool to schedule a `Runnable` to an `Executor` which performs the
+detection of the file-type via Tika. 
+
+The async handling allows to scan the file-system in
 parallel to the file detection logic.
 
 #### Licensing
 
-   Copyright 2013-2016 Dominik Stadler
+   Copyright 2013-2020 Dominik Stadler
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
