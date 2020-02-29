@@ -19,13 +19,23 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * A directory walker which recursively visits all files in the given
+ * directory and submits jobs via an {@link ExecutorService} to let
+ * Apache Tika detect the mime-type of the file.
+ */
 public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
+    private static final int NUMBER_OF_THREADS = 8;
+
     private final Tika tika = new Tika();
+
     private final MappedCounter<String> stats = new ConcurrentMappedCounter<>();
-    private final AtomicLong count = new AtomicLong(0);
-    private final AtomicLong submitCount = new AtomicLong(0);
-    private final AtomicLong errorCount = new AtomicLong(0);
-    private final ExecutorService executor = Executors.newFixedThreadPool(4);
+
+    private final AtomicLong count = new AtomicLong();
+    private final AtomicLong submitCount = new AtomicLong();
+    private final AtomicLong errorCount = new AtomicLong();
+
+    private final ExecutorService executor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     public FileTypeDirectoryWalker() {
         // filter out .svn and .git directories
@@ -36,13 +46,15 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                             new NameFileFilter(".svn"),
                             new NameFileFilter(".git")
                 ))), -1);
-        //super(new NameFileFilter("test.xsb"), -1);
     }
 
     @Override
     protected void handleFile(File file, int depth, Collection<Void> results) throws IOException {
+        // count the file and possibly delay to not submit all files immediately which
+        // would blow up memory-usage of the executor queue
         countSubmitted();
 
+        // submit a job to detect the mime-type of this file
         executor.submit(new Runnable() {
             @Override
             public void run() {
@@ -50,6 +62,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                     try (TikaInputStream str = TikaInputStream.get(file.toPath())) {
                         final String mediaType = tika.detect(str, file.getName());
 
+                        // we found a mime-type, print out the JSON for it
                         recordMediaType(mediaType);
                     }
                 } catch (FileSystemException e) {
@@ -93,7 +106,8 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
             // if there are more than 2000, wait until we are below 1000 again to not fill up memory with all the submitted tasks
             while (submitted - count.get() > 1000) {
                 System.err.println("Delaying submitting a bit to not build up too many submitted jobs, having " + submitted + " overall, " + count.get() +
-                        " done, " + (submitted - count.get()) + " still to do, waiting for this to be below 1000 before adding new jobs.");
+                        " done, " + errorCount.get() + " errors, " + (submitted - count.get()) +
+                        " currently queued, waiting for this number to be below 1000 before adding new jobs.");
                 try {
                     Thread.sleep(1000*60);
                 } catch (InterruptedException e) {
@@ -103,6 +117,14 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
         }
     }
 
+    /**
+     * Starts walking the given directory and invokes Tika for
+     * every file that is found.
+     *
+     * @param startDir The directory to walk recursively
+     * @throws IOException If reading directories or files cauess a problem
+     * @throws InterruptedException If execution is interrupted
+     */
     public void execute(File startDir) throws IOException, InterruptedException {
         Preconditions.checkNotNull(startDir, "Directory needs to be specified");
         Preconditions.checkState(startDir.exists(), "Directory %s needs to exist", startDir);
