@@ -12,3 +12,5 @@ bin/
 /out/
 *.iml
 .idea/
+
+/filetypes.txt
