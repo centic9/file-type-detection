@@ -63,7 +63,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
             // if there are more than 2000, wait until we are below 1000 again to not fill up memory with all the submitted tasks
             while (submitted - count.get() > 1000) {
                 System.err.println("Delaying submitting a bit to not build up too many submitted jobs," +
-                        " having " + submitted + " files overall, " + count.get() +
+                        " found " + submitted + " files so far, " + count.get() +
                         " done, " + errorCount.get() + " errors, " + (submitted - count.get()) +
                         " currently queued, waiting for this number to be below 1000 before adding new jobs.");
                 try {
