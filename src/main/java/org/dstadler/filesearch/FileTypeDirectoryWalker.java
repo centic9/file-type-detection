@@ -155,4 +155,8 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
 
         return stats;
     }
+
+    public long getErrorCount() {
+        return errorCount.get();
+    }
 }
