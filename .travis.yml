@@ -11,5 +11,5 @@ install:
 - gradle wrapper
 - ./gradlew compileJava
 
-#after_failure:
-#- cat build/test-results/*.xml
+after_failure:
+- cat build/test-results/*.xml
