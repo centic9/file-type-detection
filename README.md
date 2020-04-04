@@ -25,10 +25,10 @@ So a typical invocation will redirect stdout to a file via `> file-types.txt`
 
 The actual code is quite small, it uses the `DirectoryWalker` from 
 [Apache Commons IO](/https://commons.apache.org/proper/commons-io/) to
-search the provided directories and call a handler for each file that is found.
+search the provided directories and invokes a handler for each file that is found.
 
 The handler uses a thread-pool to schedule a `Runnable` to an `Executor` which performs the
-detection of the file-type via Tika. 
+detection of the file-type via Apache Tika. 
 
 The async handling allows to scan the file-system in
 parallel to the file detection logic.
