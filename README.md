@@ -33,7 +33,11 @@ detection of the file-type via Apache Tika.
 The async handling allows to scan the file-system in
 parallel to the file detection logic.
 
-#### Licensing
+### Support this project
+
+If you find this tool useful and would like to support it, you can [Sponsor the author](https://github.com/sponsors/centic9)
+
+### Licensing
 
    Copyright 2013-2020 Dominik Stadler
 
