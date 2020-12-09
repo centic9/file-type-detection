@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 public class FileTypeDirectoryWalkerTest {
@@ -25,5 +26,12 @@ public class FileTypeDirectoryWalkerTest {
 
         assertEquals("The invalid symbolic link should lead to an error",
                 1, walker.getErrorCount());
+    }
+
+    @Test
+    public void testInvalidDirectory() {
+        FileTypeDirectoryWalker walker = new FileTypeDirectoryWalker();
+        File startDir = new File("./notexisting");
+        assertThrows(IllegalStateException.class, () -> walker.execute(startDir));
     }
 }
