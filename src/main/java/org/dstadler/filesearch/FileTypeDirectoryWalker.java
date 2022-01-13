@@ -169,7 +169,7 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                 System.out.println(json);
             }
 
-            stats.addInt(mediaType, 1);
+            stats.inc(mediaType);
         }
     }
 }
