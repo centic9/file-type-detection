@@ -33,13 +33,20 @@ detection of the file-type via Apache Tika.
 The async handling allows to scan the file-system in
 parallel to the file detection logic.
 
+### Helper for extracting text from files
+
+As Tika is very good at text-extraction as well, this project also provides a small 
+tool to extract text from any file-type which it supports.
+
+Run the following Java application: `org.dstadler.filesearch.ExtractText`
+
 ### Support this project
 
 If you find this tool useful and would like to support it, you can [Sponsor the author](https://github.com/sponsors/centic9)
 
 ### Licensing
 
-   Copyright 2013-2020 Dominik Stadler
+   Copyright 2013-2022 Dominik Stadler
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
