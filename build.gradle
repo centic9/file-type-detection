@@ -32,8 +32,8 @@ dependencies {
 	implementation 'org.apache.tika:tika-parser-sqlite3-package:2.3.0'
 	implementation 'org.apache.tika:tika-parser-scientific-package:2.3.0'
 
-    implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.guava:guava:31.1-jre'
 
 	implementation 'org.slf4j:slf4j-simple:1.7.36'
 
