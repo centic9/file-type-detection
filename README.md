@@ -10,7 +10,7 @@ So a typical invocation will redirect stdout to a file via `> file-types.txt`
 
 ##### Grab it
 
-    git clone git://github.com/centic9/file-type-detection
+    git clone https://github.com/centic9/file-type-detection.git
     cd file-type-detection
 
 ##### Build it
