@@ -22,15 +22,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'commons-io:commons-io:2.11.0'
+    implementation 'commons-io:commons-io:2.12.0'
 	implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.dstadler:commons-dost:1.2.0.0'
 
-	implementation 'org.apache.tika:tika-core:2.7.0'
-	implementation 'org.apache.tika:tika-parsers:2.7.0'
-	implementation 'org.apache.tika:tika-parsers-standard-package:2.7.0'
-	implementation 'org.apache.tika:tika-parser-sqlite3-package:2.7.0'
-	implementation 'org.apache.tika:tika-parser-scientific-package:2.7.0'
+	implementation 'org.apache.tika:tika-core:2.8.0'
+	implementation 'org.apache.tika:tika-parsers:2.8.0'
+	implementation 'org.apache.tika:tika-parsers-standard-package:2.8.0'
+	implementation 'org.apache.tika:tika-parser-sqlite3-package:2.8.0'
+	implementation 'org.apache.tika:tika-parser-scientific-package:2.8.0'
 
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'com.google.guava:guava:31.1-jre'
