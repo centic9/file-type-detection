@@ -22,9 +22,9 @@ repositories {
 }
 
 dependencies {
-    implementation 'commons-io:commons-io:2.13.0'
+    implementation 'commons-io:commons-io:2.14.0'
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
-    implementation 'org.dstadler:commons-dost:1.2.0.2'
+    implementation 'org.dstadler:commons-dost:1.2.0.3'
     implementation 'com.google.guava:guava:32.1.2-jre'
 
 	implementation 'org.apache.tika:tika-core:2.9.0'
@@ -37,7 +37,7 @@ dependencies {
 
 	implementation 'org.slf4j:slf4j-simple:1.7.36'
 
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.0'
     testImplementation 'org.dstadler:commons-test:1.0.0.20'
 }
 
