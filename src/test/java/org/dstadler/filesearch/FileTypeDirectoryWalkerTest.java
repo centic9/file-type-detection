@@ -1,35 +1,35 @@
 package org.dstadler.filesearch;
 
 import org.dstadler.commons.collections.MappedCounter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileTypeDirectoryWalkerTest {
+class FileTypeDirectoryWalkerTest {
     @Test
-    public void testLocalFiles() throws IOException, InterruptedException {
+    void testLocalFiles() throws IOException, InterruptedException {
         FileTypeDirectoryWalker walker = new FileTypeDirectoryWalker();
         File startDir = new File(".");
         MappedCounter<String> stats = walker.execute(startDir);
 
-        assertTrue("Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap(),
-                stats.sortedMap().keySet().size() >= 10);
-        assertTrue("Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap(),
-                stats.sortedMap().values().stream().mapToLong(value -> value).sum() > 40);
-        assertTrue("Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap(),
-                stats.get("text/x-java-source") >= 3);
+        assertTrue(stats.sortedMap().keySet().size() >= 10,
+                "Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap());
+        assertTrue(stats.sortedMap().values().stream().mapToLong(value -> value).sum() > 40,
+                "Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap());
+        assertTrue(stats.get("text/x-java-source") >= 3,
+                "Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap());
 
-        assertEquals("The invalid symbolic link should lead to an error",
-                1, walker.getErrorCount());
+        assertEquals(1, walker.getErrorCount(),
+                "The invalid symbolic link should lead to an error");
     }
 
     @Test
-    public void testInvalidDirectory() {
+    void testInvalidDirectory() {
         FileTypeDirectoryWalker walker = new FileTypeDirectoryWalker();
         File startDir = new File("./notexisting");
         assertThrows(IllegalStateException.class, () -> walker.execute(startDir));
