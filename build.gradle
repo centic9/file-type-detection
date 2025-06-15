@@ -1,11 +1,17 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = JavaVersion.VERSION_17
+java {
+  toolchain {
+	  sourceCompatibility = JavaVersion.VERSION_17
+  }
+}
 
-mainClassName = 'org.dstadler.filesearch.LookForFileType'
-applicationDefaultJvmArgs = ['-Xmx1g', '-XX:+HeapDumpOnOutOfMemoryError']
-version = '1.0'
+application {
+    mainClass = 'org.dstadler.filesearch.LookForFileType'
+    applicationDefaultJvmArgs = ['-Xmx1g', '-XX:+HeapDumpOnOutOfMemoryError']
+    version = '1.0'
+}
 
 jar {
     manifest {
