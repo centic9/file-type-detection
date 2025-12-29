@@ -58,19 +58,21 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
     protected void handleFile(File file, int depth, Collection<Void> results) throws IOException {
         // count the file and possibly delay to not submit all files immediately which
         // would blow up memory-usage of the executor queue
-        long submitted = submitCount.incrementAndGet();
-        if(submitted - count.get() > 2000) {
-            // if there are more than 2000, wait until we are below 1000 again to not fill up memory with all the submitted tasks
-            while (submitted - count.get() > 1000) {
-                System.err.println("Delaying submitting a bit to not build up too many submitted jobs," +
-                        " found " + submitted + " files so far, " + count.get() +
-                        " done, " + errorCount.get() + " errors, " + (submitted - count.get()) +
-                        " currently queued, waiting for this number to be below 1000 before adding new jobs.");
-                try {
-                    Thread.sleep(1000*60);
-                } catch (InterruptedException e) {
-                    throw new IOException(e);
-                }
+        submitCount.incrementAndGet();
+
+        // if there are more than 2000, wait until we are below 1000 again to not fill up memory with all the submitted tasks
+        while (submitCount.get() > 10_000) {
+            long submitted = submitCount.get();
+
+            System.err.println("Delaying submitting a bit to not build up too many submitted jobs," +
+                    " found " + submitted + " files so far, " + count.get() +
+                    " done, " + errorCount.get() + " errors, " + (submitted - count.get()) +
+                    " currently queued, waiting for this number to be below 1000 before adding new jobs.");
+
+            try {
+                Thread.sleep(1_000);
+            } catch (InterruptedException e) {
+                throw new IOException(e);
             }
         }
 
@@ -104,14 +106,14 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                 count.get() + " already finished, " + errorCount.get() + " failed until now.");
         while(!executor.awaitTermination(30, TimeUnit.SECONDS)) {
             //throw new IllegalStateException("Could not wait for all threads to finish processing");
-            System.err.println("Still waiting for " + (submitCount.get() - count.get()) + " files to be processed, " +
+            System.err.println("Still waiting for " + submitCount.get() + " files to be processed, " +
                     count.get() + " already finished, " + errorCount.get() + " failed until now.");
         }
 
         // add a newline as we print out dots to show some progress
         System.err.println();
 
-        System.err.println("Found " + count + " files in directory '" + startDir + "', could not read " + errorCount.get() + " files, took " + (System.currentTimeMillis() - start) + "ms");
+        System.err.println("Found " + count.get() + " files in directory '" + startDir + "', could not read " + errorCount.get() + " files, took " + (System.currentTimeMillis() - start) + "ms");
         System.err.println("Had stats: " + stats.sortedMap());
 
         return stats;
@@ -146,6 +148,9 @@ public class FileTypeDirectoryWalker extends DirectoryWalker<Void> {
                 e.printStackTrace(System.err);
                 errorCount.incrementAndGet();
             } finally {
+                // one item down, reduce count again
+                submitCount.decrementAndGet();
+
                 long curr = count.incrementAndGet();
                 long currentTime = System.currentTimeMillis();
 
