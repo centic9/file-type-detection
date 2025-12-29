@@ -17,7 +17,7 @@ class FileTypeDirectoryWalkerTest {
         File startDir = new File(".");
         MappedCounter<String> stats = walker.execute(startDir);
 
-        assertTrue(stats.sortedMap().keySet().size() >= 10,
+        assertTrue(stats.sortedMap().size() >= 10,
                 "Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap());
         assertTrue(stats.sortedMap().values().stream().mapToLong(value -> value).sum() > 40,
                 "Had: " + startDir.getAbsolutePath() + " and " + stats.sortedMap().keySet() + " and " + stats.sortedMap());
